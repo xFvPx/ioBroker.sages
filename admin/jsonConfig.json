@@ -90,6 +90,16 @@
           "md": 4,
           "lg": 2
         },
+        "announce2": {
+          "type": "text",
+          "label": "Announce",
+          "newLine": true,
+          "hidden": "data.type === 'googleHome'",
+          "noTranslation": true,
+          "sm": 12,
+          "md": 6,
+          "lg": 4
+      },
         "announce": {
           "newLine": true,
           "type": "fileSelector",

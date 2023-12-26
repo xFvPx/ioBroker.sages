@@ -9,6 +9,7 @@ const Speech2Device = require('./lib/speech2device');
 const adapterName   = require('./package.json').name.split('.').pop();
 const fs            = require('fs');
 const path          = require('path');
+const { config } = require('process');
 
 const sayitOptions  = engines.sayitOptions;
 
@@ -38,6 +39,8 @@ let MP3FILE;
 const tasks = [];
 let processing = false;
 let helloCounter = 1;
+
+
 
 function startAdapter(options) {
     options = options || {};
@@ -293,16 +296,24 @@ function addToQueue(text, language, volume, onlyCache, testOptions) {
         volume = undefined;
     }
 
-    let announce = testOptions && testOptions.announce !== undefined ? testOptions.announce : adapter.config.announce;
+    adapter.log.info(`Dateiname Config: ${adapter.config.announce2}`);
+    let announce = testOptions && testOptions.announce !== undefined ? testOptions.announce : adapter.config.announce2;
     const annoTimeout = parseInt(testOptions && testOptions.annoTimeout !== undefined ? testOptions.annoTimeout : adapter.config.annoTimeout, 10);
+    adapter.log.info(`Dateiname: ${announce}`);
+
 
     const task = {text, language, volume, onlyCache, ts: Date.now(), combined, testOptions};
+
+    if(!announce)
+    {
+        adapter.log.error(`announce config error in addToQueue`);
+    }
 
     // If more time than 15 seconds till last text, add announcement
     if (!onlyCache && announce && !tasks.length && (!lastSay || (Date.now() - lastSay > annoTimeout * 1000))) {
         testOptions && prepareAnnounceFiles(testOptions);
         const annoVolume = parseInt(testOptions && testOptions.annoVolume !== undefined ? testOptions.annoVolume : adapter.config.annoVolume, 10);
-        announce = testOptions && testOptions.announce !== undefined ? testOptions.announce : adapter.config.announce;
+        announce = testOptions && testOptions.announce !== undefined ? testOptions.announce : adapter.config.announce2;
 
         // place as first the announcement mp3
         tasks.push({
@@ -592,9 +603,14 @@ async function prepareAnnounceFiles(config) {
         } else {
             config.announce = path.join(__dirname, fileName);
         }
+    } else {
+        adapter.log.error(`config.announce :(`);
     }
 }
 async function start() {
+
+
+
     if (!adapter.config.convertedV1toV2) {
         const newConfig = JSON.parse(JSON.stringify(adapter.config));
 
@@ -836,6 +852,13 @@ async function start() {
             await speech2device.sayItSystemVolume(volumeState.val);
         }
     }
+
+    adapter.log.info(`-----------------------`);
+    adapter.log.info(`Dateiname: ${adapter.config.announce}`);
+    adapter.log.info(`Dateiname: ${adapter.config.announce2}`);
+    adapter.log.info(`-----------------------`);
+
+    //adapter.log.info(`Dateiname: ${config.filefvp}`);
 
     adapter.subscribeStates('*');
 }

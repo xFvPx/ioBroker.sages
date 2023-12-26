@@ -11,3 +11,7 @@ package-lock.json
 *.tgz
 /sayit.0.say.mp3
 /gong.mp3
+
+
+# ioBroker dev-server
+.dev-server/

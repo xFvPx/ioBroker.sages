@@ -168,6 +168,7 @@
     "webInstance": "",
     "webServer": "",
     "announce": "",
+    "announce2": "",
     "annoTimeout": 15,
     "annoDuration": 0,
     "annoVolume": "70",
